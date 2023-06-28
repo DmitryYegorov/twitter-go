@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  docker-gs-ping: # application
+    container_name: 'twitter-go-container'
+    build: .
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DATABASE_HOST=${DB_HOST}
+    depends_on:
+      - db
+    restart: on-failure
+    networks:
+      - learning
+    ports:
+      - "4444:4444"
+    volumes:
+      - .:/app
+
+  db: # postgres db
+    image: postgres:latest
+    container_name: 'twitter-go-database-pg'
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5433:5432'
+    networks:
+      - learning
+
+networks:
+  learning:
+    driver: bridge
