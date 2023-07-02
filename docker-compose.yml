@@ -15,7 +15,7 @@ services:
     networks:
       - learning
     ports:
-      - "4444:4444"
+      - "4445:4444"
     volumes:
       - .:/app
 
