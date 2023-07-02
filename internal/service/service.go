@@ -1,13 +1,7 @@
 package service
 
-import "twitter-go/internal/repository"
+import "twitter-go/internal/service/interfaces"
 
 type Service struct {
-	Repo *repository.Repository
-}
-
-func New(repo *repository.Repository) *Service {
-	return &Service{
-		Repo: repo,
-	}
+	AuthService interfaces.AuthService
 }
