@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/sirupsen/logrus"
 	"twitter-go/entity"
 	"twitter-go/internal/repository"
 )
@@ -20,5 +21,11 @@ func (s *AuthServiceImpl) Login(email string, password string) (interface{}, err
 }
 
 func (s *AuthServiceImpl) Register(data entity.RegisterUserRequest) (int, error) {
-	return 0, nil
+	user_id, err := s.repo.UserRepo.Create(data)
+
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	return user_id, err
 }

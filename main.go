@@ -36,6 +36,7 @@ func main() {
 		Password: dbConfig.Password,
 		Database: dbConfig.Name,
 	})
+	defer pgxInstance.Close()
 	if err != nil {
 		log.Fatalf("PG start failed: %+v", err)
 	}

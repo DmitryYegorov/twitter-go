@@ -28,7 +28,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - DATABASE_HOST=${DB_HOST}
     ports:
-      - '5433:5432'
+      - "5432"
     networks:
       - learning
 

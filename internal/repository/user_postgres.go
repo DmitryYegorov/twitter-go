@@ -15,10 +15,12 @@ func NewUserPostgres(db *pgx.Conn) *UserRepoImpl {
 	}
 }
 
-func (r *UserRepoImpl) Create(data entity.User) (int, error) {
+func (r *UserRepoImpl) Create(data entity.RegisterUserRequest) (int, error) {
 	var user_id int
-	rows, err := r.db.Query("INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id", data.Name, data.Email, data.Password)
-	rows.Scan(&user_id)
+	err := r.db.QueryRow("INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id", data.Name, data.Email, data.Password).Scan(&user_id)
+	if err != nil {
+		return 0, err
+	}
 
 	return user_id, err
 }

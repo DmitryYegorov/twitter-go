@@ -6,7 +6,7 @@ import (
 )
 
 type Repository struct {
-	interfaces.UserRepo
+	UserRepo interfaces.UserRepo
 }
 
 func New(db *pgx.Conn) *Repository {
