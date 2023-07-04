@@ -24,6 +24,9 @@ func (h *authHandler) Login(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+	//if err := c.Validate(req); err != nil {
+	//	return c.JSON(http.StatusBadRequest, err)
+	//}
 
 	res, err := h.AuthService.Login(req.Email, req.Password)
 	if err != nil {
@@ -42,6 +45,9 @@ func (h *authHandler) Register(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
 
 	userId, err := h.AuthService.Register(req)
 
@@ -53,16 +59,3 @@ func (h *authHandler) Register(c echo.Context) error {
 		"user_id": userId,
 	})
 }
-
-//
-//func RegisterUser(c echo.Context) error {
-//	var req *entity.RegisterUserRequest
-//
-//	err := c.Bind(&req)
-//
-//	return err
-//}
-//
-//func LoginUser(c echo.Context) error {
-//	return nil
-//}

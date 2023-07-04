@@ -14,9 +14,48 @@ type UserPayload struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type JwtAccessClaims struct {
+	payload UserPayload `json:"payload"`
+	jwt.RegisteredClaims
+}
+type JwtRefreshClaims struct {
+	access string
+	jwt.RegisteredClaims
+}
+
 type JwtResponse struct {
 	Access  string `json:"access"`
 	Refresh string `json:"refresh"`
+}
+
+func GetAccessToken(payload UserPayload, secretKey []byte) (string, error) {
+	accessTokenClaims := jwt.MapClaims{
+		"user": payload,
+		"exp":  time.Now().Add(15 * time.Minute).Unix(),
+	}
+
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
+	access, err := accessToken.SignedString(secretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return access, nil
+}
+
+func GetRefreshToken(access string, secretKey []byte) (string, error) {
+	refreshTokenClaims := jwt.MapClaims{
+		"access": access,
+		"exp":    time.Now().Add(24 * time.Hour).Unix(),
+	}
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
+
+	refresh, err := refreshToken.SignedString(secretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return refresh, nil
 }
 
 func GenerateJwt(payload UserPayload) (*JwtResponse, error) {
@@ -29,22 +68,11 @@ func GenerateJwt(payload UserPayload) (*JwtResponse, error) {
 	accessTokenKey := []byte(jwtConfig.AccessSecretKey)
 	refreshTokenKey := []byte(jwtConfig.RefreshSecretKey)
 
-	accessTokenClaims := jwt.MapClaims{
-		"payload": payload,
-	}
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
-
-	refreshTokenClaims := jwt.MapClaims{
-		"userId": payload.Id,
-	}
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
-
-	access, err := accessToken.SignedString(accessTokenKey)
+	access, err := GetAccessToken(payload, accessTokenKey)
 	if err != nil {
 		return nil, err
 	}
-
-	refresh, err := refreshToken.SignedString(refreshTokenKey)
+	refresh, err := GetRefreshToken(access, refreshTokenKey)
 	if err != nil {
 		return nil, err
 	}
