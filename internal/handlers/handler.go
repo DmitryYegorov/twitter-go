@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"net/http"
 	"twitter-go/internal/service"
 )
 
@@ -17,11 +16,6 @@ func New(service *service.Service) *Handler {
 }
 
 func SetApi(e *echo.Echo, h *Handler) {
-	e.GET("/test", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]bool{
-			"success": true,
-		})
-	})
 	group := e.Group("/api")
 
 	authGroup := group.Group("/auth")

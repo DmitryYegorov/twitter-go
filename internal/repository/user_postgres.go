@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/jackc/pgx"
+	"github.com/sirupsen/logrus"
 	"twitter-go/entity"
 )
 
@@ -39,4 +40,46 @@ func (r *UserRepoImpl) Delete(id int) error {
 
 func (r *UserRepoImpl) Update(id int, data entity.User) (entity.User, error) {
 	return entity.User{}, nil
+}
+
+func (r *UserRepoImpl) FindByEmail(email string) (*entity.User, error) {
+	query := "SELECT u.id, u.name, u.email, u.created_at, u.email_verified_at FROM users AS u WHERE u.email = $1"
+	row := r.db.QueryRow(query, email)
+
+	logrus.Printf("input email %s", email)
+
+	user := &entity.User{}
+	err := row.Scan(&user.Id, &user.Name, &user.Email, &user.CreatedAt, &user.EmailVerifiedAt)
+
+	logrus.Printf("%+v", err)
+	logrus.Printf("test %b", err == nil)
+
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil // Пользователь не найден
+		}
+		return nil, err // Возникла ошибка при выполнении запроса
+	}
+
+	if user.Id == 0 {
+		return nil, nil
+	}
+
+	return user, nil // Пользователь найден
+}
+
+func (r *UserRepoImpl) FindByName(name string) (*entity.User, error) {
+	query := "SELECT u.id, u.name, u.email, u.created_at, u.email_verified_at FROM users AS u WHERE u.name = $1"
+	row := r.db.QueryRow(query, name)
+
+	user := &entity.User{}
+	err := row.Scan(&user.Id, &user.Name, &user.Email, &user.CreatedAt, &user.EmailVerifiedAt)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil // Пользователь не найден
+		}
+		return nil, err // Возникла ошибка при выполнении запроса
+	}
+
+	return user, nil // Пользователь найден
 }

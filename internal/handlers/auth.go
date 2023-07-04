@@ -27,17 +27,17 @@ func (h *authHandler) Register(c echo.Context) error {
 	var req entity.RegisterUserRequest
 
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, "Register error")
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	user_id, err := h.AuthService.Register(req)
+	userId, err := h.AuthService.Register(req)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Error")
+		return c.JSON(err.Status, err)
 	}
 
 	return c.JSON(http.StatusCreated, map[string]int{
-		"user_id": user_id,
+		"user_id": userId,
 	})
 }
 
