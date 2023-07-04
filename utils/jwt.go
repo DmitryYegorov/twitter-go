@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"github.com/caarlos0/env/v9"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
+	"twitter-go/config"
 )
 
 type UserPayload struct {
@@ -18,8 +20,14 @@ type JwtResponse struct {
 }
 
 func GenerateJwt(payload UserPayload) (*JwtResponse, error) {
-	accessTokenKey := []byte("secret")
-	refreshTokenKey := []byte("super-secret")
+
+	jwtConfig := &config.JwtAuthConfig{}
+	if err := env.Parse(jwtConfig); err != nil {
+		return nil, err
+	}
+
+	accessTokenKey := []byte(jwtConfig.AccessSecretKey)
+	refreshTokenKey := []byte(jwtConfig.RefreshSecretKey)
 
 	accessTokenClaims := jwt.MapClaims{
 		"payload": payload,
