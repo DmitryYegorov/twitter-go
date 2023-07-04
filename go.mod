@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/caarlos0/env/v9 v9.0.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/labstack/echo/v4 v4.10.2 // indirect

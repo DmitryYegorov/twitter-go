@@ -43,16 +43,15 @@ func (r *UserRepoImpl) Update(id int, data entity.User) (entity.User, error) {
 }
 
 func (r *UserRepoImpl) FindByEmail(email string) (*entity.User, error) {
-	query := "SELECT u.id, u.name, u.email, u.created_at, u.email_verified_at FROM users AS u WHERE u.email = $1"
+	query := "SELECT u.id, u.name, u.email, u.created_at, u.email_verified_at, u.password FROM users AS u WHERE u.email = $1"
 	row := r.db.QueryRow(query, email)
 
 	logrus.Printf("input email %s", email)
 
 	user := &entity.User{}
-	err := row.Scan(&user.Id, &user.Name, &user.Email, &user.CreatedAt, &user.EmailVerifiedAt)
+	err := row.Scan(&user.Id, &user.Name, &user.Email, &user.CreatedAt, &user.EmailVerifiedAt, &user.Password)
 
 	logrus.Printf("%+v", err)
-	logrus.Printf("test %b", err == nil)
 
 	if err != nil {
 		if err == pgx.ErrNoRows {

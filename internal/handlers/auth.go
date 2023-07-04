@@ -19,8 +19,21 @@ type (
 )
 
 func (h *authHandler) Login(c echo.Context) error {
-	//h.Service.AuthService.Login()
-	return nil
+	var req entity.LoginEmailUserRequest
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	res, err := h.AuthService.Login(req.Email, req.Password)
+	if err != nil {
+		return c.JSON(err.Status, err)
+	}
+
+	return c.JSON(http.StatusCreated, map[string]string{
+		"access":  res.Access,
+		"refresh": res.Refresh,
+	})
 }
 
 func (h *authHandler) Register(c echo.Context) error {
