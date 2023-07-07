@@ -36,7 +36,12 @@ func main() {
 		Password: dbConfig.Password,
 		Database: dbConfig.Name,
 	})
-	defer pgxInstance.Close()
+	defer func(pgxInstance *pgx.Conn) {
+		err := pgxInstance.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(pgxInstance)
 	if err != nil {
 		log.Fatalf("PG start failed: %+v", err)
 	}
@@ -44,6 +49,7 @@ func main() {
 	repo := repository.New(pgxInstance)
 	services := &service.Service{
 		AuthService: service.NewAuthService(repo),
+		PostService: service.NewPostsService(repo),
 	}
 	hands := handlers.New(services)
 

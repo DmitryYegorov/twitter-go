@@ -15,7 +15,6 @@ type UserPayload struct {
 }
 
 type JwtAccessClaims struct {
-	payload UserPayload `json:"payload"`
 	jwt.RegisteredClaims
 }
 type JwtRefreshClaims struct {
@@ -30,8 +29,11 @@ type JwtResponse struct {
 
 func GetAccessToken(payload UserPayload, secretKey []byte) (string, error) {
 	accessTokenClaims := jwt.MapClaims{
-		"user": payload,
-		"exp":  time.Now().Add(15 * time.Minute).Unix(),
+		"id":         payload.Id,
+		"name":       payload.Name,
+		"email":      payload.Email,
+		"created_at": payload.CreatedAt,
+		"exp":        time.Now().Add(15 * time.Minute).Unix(),
 	}
 
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)

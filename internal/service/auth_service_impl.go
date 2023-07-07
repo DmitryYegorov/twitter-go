@@ -43,7 +43,7 @@ func (s *AuthServiceImpl) Login(email string, password string) (*utils.JwtRespon
 }
 
 func (s *AuthServiceImpl) Register(data entity.RegisterUserRequest) (int, *utils.HttpError) {
-	var existingUser *entity.User = nil
+	var existingUser *entity.User
 
 	existingUser, err := s.repo.UserRepo.FindByEmail(data.Email)
 	if err == nil && existingUser != nil {
