@@ -39,6 +39,7 @@ func SetApi(e *echo.Echo, h *Handler) {
 	postGroup := group.Group("/posts")
 	{
 		postGroup.POST("", h.PostsHandler.Create, middlewares.JwtAuth(jwtConfig.AccessSecretKey))
+		postGroup.GET("/user/:userId", h.PostsHandler.GetAllByUser)
 	}
 }
 

@@ -37,10 +37,10 @@ func JwtAuth(accessSecretKey string) echo.MiddlewareFunc {
 
 			claims := token.Claims.(jwt.MapClaims)
 			user := utils.UserPayload{
-				Id:        int(claims["id"].(float64)), // to int
-				Name:      claims["name"].(string),     // to string
-				Email:     claims["email"].(string),    // to string
-				CreatedAt: time.Unix(0, 0),             // to time.Time
+				Id:        int(claims["id"].(float64)),
+				Name:      claims["name"].(string),
+				Email:     claims["email"].(string),
+				CreatedAt: time.Unix(0, 0),
 			}
 
 			createdInt, err := strconv.ParseInt(claims["created_at"].(string), 10, 64)

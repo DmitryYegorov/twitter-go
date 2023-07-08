@@ -2,9 +2,9 @@ package interfaces
 
 import (
 	"twitter-go/entity"
-	"twitter-go/utils"
 )
 
 type PostService interface {
-	CreateNewPost(data entity.CreatePostRequest, userId int) (int, *utils.HttpError)
+	CreateNewPost(data entity.CreatePostRequest, userId int) (int, error)
+	GetUserPosts(userId int) ([]entity.Post, error)
 }

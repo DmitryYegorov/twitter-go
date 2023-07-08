@@ -39,3 +39,24 @@ func (r *PostRepository) FindOne(id int) (*entity.Post, error) {
 
 	return post, nil
 }
+
+func (r *PostRepository) FindByUserId(userId int) ([]entity.Post, error) {
+	query := "SELECT id, text, created_at, created_by FROM posts AS p WHERE p.created_by = $1"
+	rows, err := r.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	posts := make([]entity.Post, 0)
+
+	for rows.Next() {
+		var post entity.Post
+		err := rows.Scan(&post.Id, &post.Text, &post.CreatedAt, &post.CreatedBy)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
